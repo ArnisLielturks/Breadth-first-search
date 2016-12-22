@@ -58,6 +58,15 @@ void printGrid() {
 	}
 }
 
+void clearVisited()
+{
+	for (int y = 0; y < GRID_HEIGHT; y++) {
+		for (int x = 0; x < GRID_WIDTH; x++) {
+			grid[y][x].distance = -1;
+		}
+	}
+}
+
 /**
  * Fill grid with random values
  */
@@ -150,6 +159,58 @@ void bfs()
 	}
 }
 
+/**
+* Calculate grid using Depth-first search algorithm
+*/
+void dfs()
+{
+	//The grid area where the player is located
+	Area* playerArea = &grid[playerPositionY][playerPositionX];
+	areaQueue.push_back(playerArea);
+
+	while (!areaQueue.empty()) {
+		Area* current = areaQueue.back();
+		areaQueue.pop_back();
+		//Check if we haven't visited this node yet
+		if (current->distance == -1) {
+			current->distance = 1;
+
+			//Check left neighbour
+			if (current->x - 1 >= 0) {
+				Area* left = &grid[current->y][current->x - 1];
+				if (left->type <= ITEM) {
+					areaQueue.push_back(left);
+				}
+			}
+
+			//Check top neighbour
+			if (current->y - 1 >= 0) {
+				Area* top = &grid[current->y - 1][current->x];
+				if (top->type <= ITEM) {
+					areaQueue.push_back(top);
+				}
+			}
+
+			//Check right neighbour
+			if (current->x + 1 < GRID_WIDTH) {
+				Area* right = &grid[current->y][current->x + 1];
+				if (right->type <= ITEM) {
+					areaQueue.push_back(right);
+				}
+			}
+
+			//Check bottom neighbour
+			if (current->y + 1 < GRID_HEIGHT) {
+				Area* bottom = &grid[current->y + 1][current->x];
+				if (bottom->type <= ITEM) {
+					areaQueue.push_back(bottom);
+				}
+			}
+
+		}
+	}
+}
+
 void outputDist()
 {
 	cout << endl;
@@ -165,6 +226,7 @@ void outputDist()
 int main()
 {
 	srand(time(NULL));
+
 	//Fill grid with random values
 	fillGrid();
 
@@ -176,6 +238,16 @@ int main()
 
 	//Output calculated distances
 	outputDist();
+
+	//Clear bfs algorithm outputs
+	clearVisited();
+
+	//Calculate Depth-first search algorithm values
+	dfs();
+
+	//Output reachable grid areas from players standing position
+	outputDist();
+
 
 	//pause mechanism
 	int i;
