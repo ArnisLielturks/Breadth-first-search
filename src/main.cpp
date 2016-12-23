@@ -12,7 +12,8 @@ enum TYPE {
 	FREE,
 	ITEM,
 	BOX,
-	WALL
+	WALL,
+	BOMB
 };
 
 struct Area {
@@ -52,6 +53,9 @@ void printGrid() {
 			case ITEM:
 				cout << "  *";
 				break;
+			case BOMB:
+				cout << "  X";
+				break;
 			}
 		}
 		cout << endl;
@@ -80,7 +84,7 @@ void fillGrid() {
 				continue;
 			}
 
-			grid[y][x].type = static_cast<TYPE>(rand() % 4);
+			grid[y][x].type = static_cast<TYPE>(rand() % 5);
 		}
 	}
 }
